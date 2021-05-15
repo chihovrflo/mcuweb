@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const [client, setClient] = useState(null);
+  const [input, setInput] = useState('');
+  const wsConnect = () => {
+    setClient(new WebSocket(process.env.REACT_APP_WS_HOST || 'ws://localhost:5000'));
+  };
+  useEffect(() => {
+    if (client) {
+      console.log(client);
+      client.onopen = () =>console.log('ws is open')
+    }
+  }, [client])
+  const sendMsg = () => {
+    if (client) client.send(input);
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={wsConnect}>connect</button>
+      <input value={input} onChange={(event) => setInput(event.target.value)} />
+      <p>{input}</p>
+      <button onClick={sendMsg}>send</button>
     </div>
   );
 }
