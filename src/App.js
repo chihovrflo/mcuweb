@@ -1,24 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function App() {
+  const [mcuList, setMCUList] = useState(['PI1', 'PI2']);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {mcuList.map((mcu) => (
+        <div key={mcu} style={{ margin: '10px', padding: '10px', border: '2px solid #333', borderRadius: '5px' }}>
+          <Link to={`/mcu/${mcu}`}>{mcu}</Link>
+        </div>
+      ))}
     </div>
   );
 }
