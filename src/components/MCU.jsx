@@ -11,10 +11,17 @@ export default function MCU() {
       wsRef.current.close();
     }
   }, []);
-  
+
+  const handleClick = () => {
+    if (wsRef.current) {
+      wsRef.current.send('FanOn');
+    }
+  }
+
   return (
     <div >
       MCU
+      <button onClick={handleClick}>Send</button>
     </div>
   );
 }
