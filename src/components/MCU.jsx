@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from 'react';
 
 export default function MCU() {
   const wsRef = useRef();
-  // new WebSocket(process.env.REACT_APP_WS_HOST || 'ws://localhost:5000')
   useEffect(() => {
     wsRef.current = new WebSocket(process.env.REACT_APP_WS_HOST || 'ws://localhost:5000');
     if (wsRef.current) {
