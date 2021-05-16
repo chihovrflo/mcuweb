@@ -1,27 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function App() {
-  const [client, setClient] = useState(null);
-  const [input, setInput] = useState('');
-  const wsConnect = () => {
-    setClient(new WebSocket(process.env.REACT_APP_WS_HOST || 'ws://localhost:5000'));
-  };
-  useEffect(() => {
-    if (client) {
-      console.log(client);
-      client.onopen = () =>console.log('ws is open')
-    }
-  }, [client])
-  const sendMsg = () => {
-    if (client) client.send(input);
-  }
+  const [mcuList, setMCUList] = useState(['PI1', 'PI2']);
   return (
     <div className="App">
-      <button onClick={wsConnect}>connect</button>
-      <input value={input} onChange={(event) => setInput(event.target.value)} />
-      <p>{input}</p>
-      <button onClick={sendMsg}>send</button>
+      {mcuList.map((mcu) => (
+        <div key={mcu} style={{ margin: '10px', padding: '10px', border: '2px solid #333', borderRadius: '5px' }}>
+          <Link to={`/mcu/${mcu}`}>{mcu}</Link>
+        </div>
+      ))}
     </div>
   );
 }
