@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 function App() {
   const [mcuList, setMCUList] = useState(['PI1', 'PI2']);
-  const [host, setHost] = useState('');
-  const [port, setPort] = useState(null);
+  const [host, setHost] = useState('192.168.51.5');
+  const [port, setPort] = useState(1500);
   return (
     <div className="App">
       {mcuList.map((mcu) => (
