@@ -12,7 +12,7 @@ export default function Routes () {
     <Router>
       <Switch>
         <Route exact path="/" component={App} />
-        <Route exact path="/mcu/:name" component={MCU} />
+        <Route exact path="/mcu/host/:host/port/:port" component={MCU} />
         <Route exact path="/add/mcu" component={() => <div>add mcu</div>} />
       </Switch>
     </Router>
