@@ -3,18 +3,23 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
-import App from '../App';
-import MCU from '../components/MCU';
+import {
+  MCUCreator,
+  MCUDetail,
+  MCUList,
+} from 'pages/MCU';
 
-export default function Routes () {
+export default function Routes() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={App} />
-        <Route exact path="/mcu/host/:host/port/:port" component={MCU} />
-        <Route exact path="/add/mcu" component={() => <div>add mcu</div>} />
+        <Route exact path="/" component={() => <Redirect to="/mcu/list" />} />
+        <Route exact path="/mcu/list" component={MCUList} />
+        <Route exact path="/mcu/host/:host/port/:port" component={MCUDetail} />
+        <Route exact path="/mcu/add" component={MCUCreator} />
       </Switch>
     </Router>
-  )
+  );
 }
