@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
+import propTypes from 'prop-types';
 
 export default function useWebSocket({
-  onOpen = () => {},
-  onClose = () => {},
-  onMessage = () => {},
+  onOpen,
+  onClose,
+  onMessage,
 }) {
   const wsRef = useRef();
   useEffect(() => {
@@ -15,8 +16,11 @@ export default function useWebSocket({
     }
     return () => wsRef.current.close();
   }, []);
-
-  return {
-    wsRef,
-  };
+  return wsRef;
 }
+
+useWebSocket.propTypes = {
+  onOpen: propTypes.func.isRequired,
+  onClose: propTypes.func.isRequired,
+  onMessage: propTypes.func.isRequired,
+};
