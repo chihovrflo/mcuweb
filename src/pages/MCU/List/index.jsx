@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { getMCUList } from 'apis/mcu/list';
 
 export default function MCUList() {
-  const [response, setResponse] = useState('');
+  const [response] = useState('');
   const handleGetMCUList = async () => {
     const result = await getMCUList();
-    setResponse(result);
+    console.log(result);
   };
   return (
     <div>
