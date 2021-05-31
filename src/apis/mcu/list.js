@@ -5,7 +5,7 @@ const LOCALHOST = 'http://localhost:5000';
 
 async function getMCUList() {
   const response = await request({
-    url: '/api/mcu/list',
+    url: '/api/mcu/getlist',
     baseURL: LOCALHOST,
     method: 'get',
   });
@@ -13,6 +13,17 @@ async function getMCUList() {
   return response.data;
 }
 
+async function addMCUList() {
+  const response = await request({
+    url: '/api/mcu/addlist',
+    baseURL: LOCALHOST,
+    method: 'post',
+  });
+  console.log(response);
+  return response.data;
+}
+
 export {
   getMCUList,
+  addMCUList,
 };
