@@ -6,11 +6,14 @@ import {
 } from 'actions/mcu';
 import {
   DetailInput,
+  DetailRoot,
 } from './styled';
 
 export default function MCUDetail({ match }) {
   const { port, host } = match.params;
-  const [data, setData] = useState('');
+  const [display, setDisplay] = useState('');
+  const [auto, setAuto] = useState('');
+  const [manual, setManual] = useState('');
   const [temp, setTemp] = useState('');
   const [fan, setFan] = useState('');
   const [bulb, setBulb] = useState('');
@@ -24,7 +27,10 @@ export default function MCUDetail({ match }) {
     },
     onClose: () => console.log('close'),
     onMessage: (ws, event) => {
-      setData(event.data);
+      const res = JSON.parse(event.data);
+      if (res.type === 'setUpDisplay') setDisplay(res.payload);
+      else if (res.type === 'setUpAuto') setAuto(res.payload);
+      else setManual(res.payload);
     },
   });
 
@@ -44,10 +50,18 @@ export default function MCUDetail({ match }) {
   };
 
   return (
-    <div>
+    <DetailRoot>
       <div>
-        <DetailInput label="Temp" value={temp} onChange={handleTemp} />
-        <button type="button" onClick={handleClick(tempSetup(temp))}>Send</button>
+        <button type="button" onClick={handleClick(dataRead())}>DataRead</button>
+        <button type="button" onClick={handleClick(configFileRead())}>ConfigFileRead</button>
+      </div>
+      <div>
+        {display}
+      </div>
+      <DetailInput label="Temp" value={temp} onChange={handleTemp} />
+      <button type="button" onClick={handleClick(tempSetup(temp))}>Send</button>
+      <div>
+        {auto}
       </div>
       <div>
         <button type="button" onClick={handleClick(fanOn())}>FanOn</button>
@@ -62,13 +76,9 @@ export default function MCUDetail({ match }) {
         <button type="button" onClick={handleClick(bulbSetup(bulb))}>Send</button>
       </div>
       <div>
-        <button type="button" onClick={handleClick(dataRead())}>DataRead</button>
-        <button type="button" onClick={handleClick(configFileRead())}>ConfigFileRead</button>
+        {manual}
       </div>
-      <div>
-        {data}
-      </div>
-    </div>
+    </DetailRoot>
   );
 }
 
