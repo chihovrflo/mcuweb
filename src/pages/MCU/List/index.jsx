@@ -1,17 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getMCUList } from 'apis/mcu/list';
+import {
+  ListRoot,
+  ListContainer,
+  ListItem,
+  ListLink,
+} from './styled';
 
 export default function MCUList() {
-  const [response] = useState('');
-  const handleGetMCUList = async () => {
-    const result = await getMCUList();
-    console.log(result);
-  };
+  const [mcuList, setMCUList] = useState([]);
+  useEffect(async () => {
+    const mcu = await getMCUList();
+    setMCUList(mcu.list);
+  }, []);
   return (
-    <div>
-      MCU List
-      <button type="button" onClick={handleGetMCUList}>get mcu list</button>
-      {response}
-    </div>
+    <ListRoot>
+      <ListContainer>
+        <h2>MCU List</h2>
+        {mcuList.map(({ name, host, port }) => (
+          <ListItem key={name}>
+            <ListLink to={`/mcu/host/${host}/port/${port}`}>
+              <div>{`name: ${name}`}</div>
+              <div>{`host: ${host}`}</div>
+              <div>{`port: ${port}`}</div>
+            </ListLink>
+          </ListItem>
+        ))}
+      </ListContainer>
+    </ListRoot>
   );
 }

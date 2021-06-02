@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import request from 'apis/axios';
 
-const LOCALHOST = 'http://localhost:5000';
+const LOCALHOST = 'http://localhost:5001';
 
 async function getMCUList() {
   const response = await request({
