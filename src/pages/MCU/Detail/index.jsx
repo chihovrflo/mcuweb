@@ -7,16 +7,25 @@ import {
 import {
   DetailInput,
   DetailRoot,
+  Temperature,
+  TempWrapper,
+  DetailItem,
+  SwitchLabel,
+  SwitchItem,
+  FunctionWrapper,
+  GridElement,
+  AntSwitch,
+  TypographyElement,
 } from './styled';
 
 export default function MCUDetail({ match }) {
   const { port, host } = match.params;
-  const [display, setDisplay] = useState('');
-  const [auto, setAuto] = useState('');
-  const [manual, setManual] = useState('');
-  const [temp, setTemp] = useState('');
-  const [fan, setFan] = useState('');
-  const [bulb, setBulb] = useState('');
+  const [display, setDisplay] = useState('25');
+  const [fanSpeed] = useState('unknown');
+  const [bulbLight] = useState('unknown');
+  const [checkedFan, setCheckFan] = useState(false);
+  const [checkedBulb, setCheckBulb] = useState(false);
+  const [checkedMode, setCheckMode] = useState(false);
   const wsRef = useWebSocket({
     onOpen: (ws) => {
       console.log('ws is opened!');
@@ -28,9 +37,28 @@ export default function MCUDetail({ match }) {
     onClose: () => console.log('close'),
     onMessage: (ws, event) => {
       const res = JSON.parse(event.data);
+      console.log(res);
+      console.log(res.payload);
       if (res.type === 'setUpDisplay') setDisplay(res.payload);
       else if (res.type === 'setUpAuto') setAuto(res.payload);
-      else setManual(res.payload);
+      else {
+        switch (res.payload) {
+          case 'OK, Fan On\n':
+            setCheckFan(true);
+            break;
+          case 'OK, Fan Off\n':
+            setCheckFan(false);
+            break;
+          case 'OK, Bulb On\n':
+            setCheckBulb(true);
+            break;
+          case 'OK, Bulb Off\n':
+            setCheckBulb(false);
+            break;
+          default:
+            break;
+        }
+      }
     },
   });
 
@@ -39,44 +67,47 @@ export default function MCUDetail({ match }) {
       wsRef.current.send(JSON.stringify(event));
     }
   };
-  const handleTemp = (event) => {
-    setTemp(event.target.value);
-  };
-  const handleFan = (event) => {
-    setFan(event.target.value);
-  };
-  const handleBulb = (event) => {
-    setBulb(event.target.value);
+
+  const handleMode = (event) => {
+    setCheckMode(event.target.checked);
   };
 
   return (
     <DetailRoot>
+      <TempWrapper>
+        <Temperature
+          id="display"
+          label="Environment Temperature"
+          defaultValue={display}
+          type="number"
+          InputProps={{
+            readOnly: true,
+          }}
+          variant="outlined"
+        />
+      </TempWrapper>
+      <DetailItem>
+        <span>fanSpeed:</span>
+        <span>{fanSpeed}</span>
+      </DetailItem>
+      <DetailItem>
+        <span>bulbLight:</span>
+        <span>{bulbLight}</span>
+      </DetailItem>
+      
+      <TypographyElement component="div">
+        <GridElement component="label" container alignItems="center" spacing={1}>
+          <GridElement item>Auto</GridElement>
+          <GridElement item>
+            <AntSwitch checked={checkedMode} onChange={handleMode} name="checkedMode" />
+          </GridElement>
+          <GridElement item>Manual</GridElement>
+        </GridElement>
+      </TypographyElement>
+      
       <div>
         <button type="button" onClick={handleClick(dataRead())}>DataRead</button>
         <button type="button" onClick={handleClick(configFileRead())}>ConfigFileRead</button>
-      </div>
-      <div>
-        {display}
-      </div>
-      <DetailInput label="Temp" value={temp} onChange={handleTemp} />
-      <button type="button" onClick={handleClick(tempSetup(temp))}>Send</button>
-      <div>
-        {auto}
-      </div>
-      <div>
-        <button type="button" onClick={handleClick(fanOn())}>FanOn</button>
-        <button type="button" onClick={handleClick(fanOff())}>FanOff</button>
-        <DetailInput label="Fan" value={fan} onChange={handleFan} />
-        <button type="button" onClick={handleClick(fanSetup(fan))}>Send</button>
-      </div>
-      <div>
-        <button type="button" onClick={handleClick(bulbOn())}>BulbOn</button>
-        <button type="button" onClick={handleClick(bulbOff())}>BulbOff</button>
-        <DetailInput label="Bulb" value={bulb} onChange={handleBulb} />
-        <button type="button" onClick={handleClick(bulbSetup(bulb))}>Send</button>
-      </div>
-      <div>
-        {manual}
       </div>
     </DetailRoot>
   );
