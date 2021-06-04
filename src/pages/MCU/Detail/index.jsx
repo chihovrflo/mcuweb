@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useWebSocket from 'hooks/useWebSocket';
 import pt from 'lib/propTypes';
 import {
-  tempSetup, fanOn, fanOff, fanSetup, bulbOn, bulbOff, bulbSetup, dataRead, configFileRead,
+  tempSetup, fanOn, fanOff, fanSetup, bulbOn, bulbOff, bulbSetup, configFileRead,
 } from 'actions/mcu';
 import {
   DetailRoot,
@@ -15,16 +15,15 @@ import Controller from './components/Controller';
 export default function MCUDetail({ match }) {
   const { port, host } = match.params;
   const [display, setDisplay] = useState('25');
-  const [fanSpeed] = useState('unknown');
-  const [bulbLight] = useState('unknown');
+  const [fanSpeed, setFanSpeed] = useState('unknown');
+  const [bulbLight, setBulbLight] = useState('unknown');
   const [temp, setTemp] = useState('');
   const [auto, setAuto] = useState('');
-  const [manual] = useState('');
+  const [manual, setManual] = useState('');
   const [fan, setFan] = useState('');
   const [bulb, setBulb] = useState('');
   const [checkedFan, setCheckFan] = useState(false);
   const [checkedBulb, setCheckBulb] = useState(false);
-  const [checkedMode, setCheckMode] = useState(false);
   const wsRef = useWebSocket({
     onOpen: (ws) => {
       console.log('ws is opened!');
@@ -38,8 +37,12 @@ export default function MCUDetail({ match }) {
       const res = JSON.parse(event.data);
       console.log(res);
       console.log(res.payload);
-      if (res.type === 'setUpDisplay') setDisplay(res.payload);
-      else if (res.type === 'setUpAuto') setAuto(res.payload);
+      if (res.type === 'setUpDisplay') {
+        const splitedMsg = res.payload.split(',');
+        setDisplay(splitedMsg[0].split(':')[1]);
+        setFanSpeed(splitedMsg[1].split(':')[1]);
+        setBulbLight(splitedMsg[2].split(':')[1]);
+      } else if (res.type === 'setUpAuto') setAuto(res.payload);
       else {
         switch (res.payload) {
           case 'OK, Fan On\n':
@@ -55,6 +58,7 @@ export default function MCUDetail({ match }) {
             setCheckBulb(false);
             break;
           default:
+            setManual(res.payload);
             break;
         }
       }
@@ -76,17 +80,13 @@ export default function MCUDetail({ match }) {
     }
   };
 
-  const handleMode = (event) => {
-    setCheckMode(event.target.checked);
-  };
-
   return (
     <DetailRoot>
       <TempWrapper>
         <Temperature
           id="display"
           label="Environment Temperature"
-          defaultValue={display}
+          value={display}
           type="number"
           InputProps={{
             readOnly: true,
@@ -102,13 +102,13 @@ export default function MCUDetail({ match }) {
         <span>bulbLight:</span>
         <span>{bulbLight}</span>
       </DetailItem>
-      <Controller checkedMode={checkedMode} handleMode={handleMode}>
+      <Controller>
         <Controller.Auto
           temp={temp}
           setTemp={setTemp}
           handleTempSetUp={handleSendMessage(tempSetup(temp))}
+          auto={auto}
         />
-        <div>{auto}</div>
         <Controller.Manual
           fan={fan}
           bulb={bulb}
@@ -120,11 +120,10 @@ export default function MCUDetail({ match }) {
           handleBulbSetUp={handleSendMessage(bulbSetup(bulb))}
           handleFanSwitch={handleSendMessageWhenSwitch(fanOn, fanOff)}
           handleBulbSwitch={handleSendMessageWhenSwitch(bulbOn, bulbOff)}
+          manual={manual}
         />
-        <div>{manual}</div>
       </Controller>
       <div>
-        <button type="button" onClick={handleSendMessage(dataRead())}>DataRead</button>
         <button type="button" onClick={handleSendMessage(configFileRead())}>ConfigFileRead</button>
       </div>
     </DetailRoot>

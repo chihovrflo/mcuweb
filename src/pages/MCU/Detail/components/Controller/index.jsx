@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import propTypes from 'prop-types';
 import pt from 'lib/propTypes';
 import ControllContext from './context';
 import Auto from './Auto';
@@ -12,17 +11,18 @@ import {
 
 function Controller({
   children,
-  checkedMode,
-  handleMode,
 }) {
-  const [ctrlComponent, setCtrlComponent] = useState('auto');
+  const [ctrlComponent, setCtrlComponent] = useState('Auto');
+  const handleMode = (event) => {
+    setCtrlComponent(event.target.checked ? 'Manual' : 'Auto');
+  };
   return (
-    <ControllContext.Provider value={{ ctrlComponent, setCtrlComponent }}>
+    <ControllContext.Provider value={{ ctrlComponent }}>
       <TypographyElement component="div">
         <GridElement component="label" container alignItems="center" spacing={1}>
           <GridElement item>Auto</GridElement>
           <GridElement item>
-            <AntSwitch checked={checkedMode} onChange={handleMode} name="checkedMode" />
+            <AntSwitch onChange={handleMode} name="checkedMode" />
           </GridElement>
           <GridElement item>Manual</GridElement>
         </GridElement>
@@ -34,8 +34,6 @@ function Controller({
 
 Controller.propTypes = {
   children: pt.children.isRequired,
-  checkedMode: propTypes.bool.isRequired,
-  handleMode: propTypes.func.isRequired,
 };
 
 Controller.Auto = Auto;
