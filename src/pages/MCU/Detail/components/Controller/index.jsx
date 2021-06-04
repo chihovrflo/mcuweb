@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import propTypes from 'prop-types';
 import pt from 'lib/propTypes';
 import ControllContext from './context';
@@ -15,8 +15,9 @@ function Controller({
   checkedMode,
   handleMode,
 }) {
+  const [ctrlComponent, setCtrlComponent] = useState('auto');
   return (
-    <ControllContext.Provider>
+    <ControllContext.Provider value={{ ctrlComponent, setCtrlComponent }}>
       <TypographyElement component="div">
         <GridElement component="label" container alignItems="center" spacing={1}>
           <GridElement item>Auto</GridElement>
