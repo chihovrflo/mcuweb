@@ -1,102 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
+import propTypes from 'prop-types';
+import pt from 'lib/propTypes';
+import ControllContext from './context';
+import Auto from './Auto';
+import Manual from './Manual';
 import {
-  DetailInput,
-  SwitchLabel,
-  SwitchItem,
-  FunctionWrapper,
-} from 'pages/MCU/Detail/styled';
+  TypographyElement,
+  GridElement,
+  AntSwitch,
+} from './styled';
 
-function Manual() {
-  const [manual] = useState('');
-  const [fan, setFan] = useState('');
-  const [bulb, setBulb] = useState('');
-  const [checkedFan, setCheckFan] = useState(false);
-  const [checkedBulb, setCheckBulb] = useState(false);
-  const handleFan = (event) => {
-    setFan(event.target.value);
-  };
-  const handleBulb = (event) => {
-    setBulb(event.target.value);
-  };
-  const handleFanSwitch = (event) => {
-    if (wsRef.current) {
-      const { checked } = event.target;
-      wsRef.current.send(JSON.stringify(checked ? fanOn() : fanOff()));
-    }
-  };
-  const handleBulbSwitch = (event) => {
-    if (wsRef.current) {
-      const { checked } = event.target;
-      wsRef.current.send(JSON.stringify(checked ? bulbOn() : bulbOff()));
-    }
-  };
+function Controller({
+  children,
+  checkedMode,
+  handleMode,
+}) {
   return (
-    <>
-      <FunctionWrapper>
-        <SwitchLabel
-          control={(
-            <SwitchItem
-              checked={checkedFan}
-              onChange={handleFanSwitch}
-              name="checkedFan"
-              color="primary"
-            />
-          )}
-          label="Fan Switch"
-        />
-        <DetailInput label="Fan" value={fan} onChange={handleFan} />
-        <button type="button" onClick={handleClick(fanSetup(fan))}>Send</button>
-      </FunctionWrapper>
-      <FunctionWrapper>
-        <SwitchLabel
-          control={(
-            <SwitchItem
-              checked={checkedBulb}
-              onChange={handleBulbSwitch}
-              name="checkedBulb"
-              color="primary"
-            />
-          )}
-          label="Bulb Switch"
-        />
-        <DetailInput label="Bulb" value={bulb} onChange={handleBulb} />
-        <button type="button" onClick={handleClick(bulbSetup(bulb))}>Send</button>
-      </FunctionWrapper>
-      <div>
-        {manual}
-      </div>
-    </>
+    <ControllContext.Provider>
+      <TypographyElement component="div">
+        <GridElement component="label" container alignItems="center" spacing={1}>
+          <GridElement item>Auto</GridElement>
+          <GridElement item>
+            <AntSwitch checked={checkedMode} onChange={handleMode} name="checkedMode" />
+          </GridElement>
+          <GridElement item>Manual</GridElement>
+        </GridElement>
+      </TypographyElement>
+      {children}
+    </ControllContext.Provider>
   );
 }
-function Auto() {
-  const [temp, setTemp] = useState('');
-  const [auto, setAuto] = useState('');
-  const handleTemp = (event) => {
-    setTemp(event.target.value);
-  };
-  return (
-    <>
-      <FunctionWrapper>
-        <DetailInput label="Temp" value={temp} onChange={handleTemp} />
-        <button type="button" onClick={handleClick(tempSetup(temp))}>Send</button>
-      </FunctionWrapper>
-      <div>
-        {auto}
-      </div>
-    </>
-  );
-}
-export default function Controller() {
-  const [ctrlComponent, setCtrlComponent] = useState('auto');
-  const changeToManual = () => setCtrlComponent('manual');
-  const changeToAuto = () => setCtrlComponent('auto');
-  const ComponentHandler = () => {
-    if (ctrlComponent === 'manual') return <Manual />;
-    return <Auto />;
-  };
-  return (
-    <Tag>
-      <ComponentHandler />
-    </Tag>
-  );
-}
+
+Controller.propTypes = {
+  children: pt.children.isRequired,
+  checkedMode: propTypes.bool.isRequired,
+  handleMode: propTypes.func.isRequired,
+};
+
+Controller.Auto = Auto;
+Controller.Manual = Manual;
+export default Controller;

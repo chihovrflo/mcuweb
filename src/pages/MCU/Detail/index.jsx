@@ -5,24 +5,23 @@ import {
   tempSetup, fanOn, fanOff, fanSetup, bulbOn, bulbOff, bulbSetup, dataRead, configFileRead,
 } from 'actions/mcu';
 import {
-  DetailInput,
   DetailRoot,
   Temperature,
   TempWrapper,
   DetailItem,
-  SwitchLabel,
-  SwitchItem,
-  FunctionWrapper,
-  GridElement,
-  AntSwitch,
-  TypographyElement,
 } from './styled';
+import Controller from './components/Controller';
 
 export default function MCUDetail({ match }) {
   const { port, host } = match.params;
   const [display, setDisplay] = useState('25');
   const [fanSpeed] = useState('unknown');
   const [bulbLight] = useState('unknown');
+  const [temp, setTemp] = useState('');
+  const [auto, setAuto] = useState('');
+  const [manual] = useState('');
+  const [fan, setFan] = useState('');
+  const [bulb, setBulb] = useState('');
   const [checkedFan, setCheckFan] = useState(false);
   const [checkedBulb, setCheckBulb] = useState(false);
   const [checkedMode, setCheckMode] = useState(false);
@@ -62,9 +61,18 @@ export default function MCUDetail({ match }) {
     },
   });
 
-  const handleClick = (event) => () => {
+  const handleInput = (setValue) => (event) => setValue(event.target.value);
+
+  const handleSendMessage = (action) => () => {
     if (wsRef.current) {
-      wsRef.current.send(JSON.stringify(event));
+      wsRef.current.send(JSON.stringify(action));
+    }
+  };
+
+  const handleSendMessageWhenSwitch = (onAction, offAction) => (event) => {
+    if (wsRef.current) {
+      const { checked } = event.target;
+      wsRef.current.send(JSON.stringify(checked ? onAction() : offAction()));
     }
   };
 
@@ -94,20 +102,30 @@ export default function MCUDetail({ match }) {
         <span>bulbLight:</span>
         <span>{bulbLight}</span>
       </DetailItem>
-      
-      <TypographyElement component="div">
-        <GridElement component="label" container alignItems="center" spacing={1}>
-          <GridElement item>Auto</GridElement>
-          <GridElement item>
-            <AntSwitch checked={checkedMode} onChange={handleMode} name="checkedMode" />
-          </GridElement>
-          <GridElement item>Manual</GridElement>
-        </GridElement>
-      </TypographyElement>
-      
+      <Controller checkedMode={checkedMode} handleMode={handleMode}>
+        <Controller.Auto
+          temp={temp}
+          setTemp={setTemp}
+          handleTempSetUp={handleSendMessage(tempSetup(temp))}
+        />
+        <div>{auto}</div>
+        <Controller.Manual
+          fan={fan}
+          bulb={bulb}
+          checkedFan={checkedFan}
+          checkedBulb={checkedBulb}
+          handleFan={handleInput(setFan)}
+          handleBulb={handleInput(setBulb)}
+          handleFanSetUp={handleSendMessage(fanSetup(fan))}
+          handleBulbSetUp={handleSendMessage(bulbSetup(bulb))}
+          handleFanSwitch={handleSendMessageWhenSwitch(fanOn, fanOff)}
+          handleBulbSwitch={handleSendMessageWhenSwitch(bulbOn, bulbOff)}
+        />
+        <div>{manual}</div>
+      </Controller>
       <div>
-        <button type="button" onClick={handleClick(dataRead())}>DataRead</button>
-        <button type="button" onClick={handleClick(configFileRead())}>ConfigFileRead</button>
+        <button type="button" onClick={handleSendMessage(dataRead())}>DataRead</button>
+        <button type="button" onClick={handleSendMessage(configFileRead())}>ConfigFileRead</button>
       </div>
     </DetailRoot>
   );
