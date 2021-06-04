@@ -21,6 +21,7 @@ export default function Manual({
   handleBulbSetUp,
 }) {
   const ctrlComponent = useContext(ControllContext);
+  console.log(ctrlComponent);
   return (
     <>
       <FunctionWrapper>

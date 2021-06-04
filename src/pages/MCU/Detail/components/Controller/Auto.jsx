@@ -9,6 +9,7 @@ export default function Auto({
   handleTempSetUp,
 }) {
   const ctrlComponent = useContext(ControllContext);
+  console.log(ctrlComponent);
   const handleTemp = (event) => setTemp(event.target.value);
   return (
     <FunctionWrapper>
