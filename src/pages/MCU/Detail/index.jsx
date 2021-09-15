@@ -20,6 +20,7 @@ export default function MCUDetail({ match }) {
   const [temp, setTemp] = useState('');
   const [auto, setAuto] = useState('');
   const [manual, setManual] = useState('');
+  const [config, setConfig] = useState('');
   const [fan, setFan] = useState('');
   const [bulb, setBulb] = useState('');
   const [checkedFan, setCheckFan] = useState(false);
@@ -43,6 +44,7 @@ export default function MCUDetail({ match }) {
         setFanSpeed(splitedMsg[1].split(':')[1]);
         setBulbLight(splitedMsg[2].split(':')[1]);
       } else if (res.type === 'setUpAuto') setAuto(res.payload);
+      else if (res.type === 'setUpConfig') setConfig(res.payload);
       else {
         switch (res.payload) {
           case 'OK, Fan On\n':
@@ -82,6 +84,7 @@ export default function MCUDetail({ match }) {
 
   return (
     <DetailRoot>
+      
       <TempWrapper>
         <Temperature
           id="display"
@@ -125,6 +128,7 @@ export default function MCUDetail({ match }) {
       </Controller>
       <div>
         <button type="button" onClick={handleSendMessage(configFileRead())}>ConfigFileRead</button>
+        {config}
       </div>
     </DetailRoot>
   );

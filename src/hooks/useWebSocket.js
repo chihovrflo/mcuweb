@@ -8,7 +8,7 @@ export default function useWebSocket({
 }) {
   const wsRef = useRef();
   useEffect(() => {
-    wsRef.current = new WebSocket(process.env.REACT_APP_WS_HOST || 'ws://localhost:5001');
+    wsRef.current = new WebSocket(process.env.REACT_APP_WS_HOST || 'ws://localhost:5000');
     if (wsRef.current) {
       wsRef.current.onopen = () => onOpen(wsRef.current);
       wsRef.current.onclose = () => onClose(wsRef.current);

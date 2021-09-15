@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import request from 'apis/axios';
 
-const LOCALHOST = 'http://localhost:5001';
+const LOCALHOST = process.env.REACT_APP_API_HOST || 'http://localhost:5000';
 
 async function getMCUList() {
   const response = await request({
