@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getMCUList } from 'apis/mcu/list';
+import MCUItem from './components/Item';
 import {
   ListRoot,
   ListContainer,
-  ListItem,
-  ListLink,
 } from './styled';
 
 export default function MCUList() {
@@ -18,13 +17,18 @@ export default function MCUList() {
       <ListContainer>
         <h2>MCU List</h2>
         {mcuList.map(({ name, host, port }) => (
-          <ListItem key={name}>
-            <ListLink to={`/mcu/host/${host}/port/${port}`}>
-              <div>{`name: ${name}`}</div>
-              <div>{`host: ${host}`}</div>
-              <div>{`port: ${port}`}</div>
-            </ListLink>
-          </ListItem>
+          <MCUItem key={name}>
+            <MCUItem.Editor
+              name={name}
+              host={host}
+              port={port}
+            />
+            <MCUItem.Viewer
+              name={name}
+              host={host}
+              port={port}
+            />
+          </MCUItem>
         ))}
       </ListContainer>
     </ListRoot>
