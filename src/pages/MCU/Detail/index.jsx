@@ -9,6 +9,11 @@ import {
   Temperature,
   TempWrapper,
   DetailItem,
+  GridElement,
+  TypographyElement,
+  ListElement,
+  ListItemElement,
+  ListItemTextElement,
 } from './styled';
 import Controller from './components/Controller';
 
@@ -84,7 +89,6 @@ export default function MCUDetail({ match }) {
 
   return (
     <DetailRoot>
-      
       <TempWrapper>
         <Temperature
           id="display"
@@ -126,10 +130,19 @@ export default function MCUDetail({ match }) {
           manual={manual}
         />
       </Controller>
-      <div>
-        <button type="button" onClick={handleSendMessage(configFileRead())}>ConfigFileRead</button>
-        {config}
-      </div>
+      <GridElement item xs={12} md={6}>
+        <TypographyElement sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+          ConfigFileRead
+        </TypographyElement>
+        <button type="button" onClick={handleSendMessage(configFileRead())}>check</button>
+        <ListElement>
+          {config.split(', ').map((setting) => (
+            <ListItemElement key={setting}>
+              <ListItemTextElement primary={setting} />
+            </ListItemElement>
+          ))}
+        </ListElement>
+      </GridElement>
     </DetailRoot>
   );
 }
