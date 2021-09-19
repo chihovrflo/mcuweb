@@ -9,6 +9,11 @@ import {
   Temperature,
   TempWrapper,
   DetailItem,
+  GridElement,
+  TypographyElement,
+  ListElement,
+  ListItemElement,
+  ListItemTextElement,
 } from './styled';
 import Controller from './components/Controller';
 
@@ -20,11 +25,19 @@ export default function MCUDetail({ match }) {
   const [temp, setTemp] = useState('');
   const [auto, setAuto] = useState('');
   const [manual, setManual] = useState('');
-  const [config, setConfig] = useState('');
   const [fan, setFan] = useState('');
   const [bulb, setBulb] = useState('');
   const [checkedFan, setCheckFan] = useState(false);
   const [checkedBulb, setCheckBulb] = useState(false);
+  const [btc9100CmbPortname, setBtc9100CmbPortname] = useState('');
+  const [btc9100ModbusParity, setBtc9100ModbusParity] = useState('');
+  const [btc9100CmbStopbits, setBtc9100CmbStopbits] = useState('');
+  const [btc9100CmbDatabits, setBtc9100CmbDatabits] = useState('');
+  const [btc9100ModbusBaudrate, setBtc9100ModbusBaudrate] = useState('');
+  const [btc9100ModbusSlaveId, setBtc9100ModbusSlaveId] = useState('');
+  const [ezd305fCmbPortname, setEzd305fCmbPortname] = useState('');
+  const [ezd305fCmbParity, setEzd305fCmbParity] = useState('');
+  const [ezd305fCmbStopbits, setEzd305fCmbStopbits] = useState('');
   const wsRef = useWebSocket({
     onOpen: (ws) => {
       console.log('ws is opened!');
@@ -44,8 +57,18 @@ export default function MCUDetail({ match }) {
         setFanSpeed(splitedMsg[1].split(':')[1]);
         setBulbLight(splitedMsg[2].split(':')[1]);
       } else if (res.type === 'setUpAuto') setAuto(res.payload);
-      else if (res.type === 'setUpConfig') setConfig(res.payload);
-      else {
+      else if (res.type === 'setUpConfig') {
+        const splitedMsg = res.payload.split(', ');
+        setBtc9100CmbPortname(splitedMsg[0]);
+        setBtc9100ModbusParity(splitedMsg[1]);
+        setBtc9100CmbStopbits(splitedMsg[2]);
+        setBtc9100CmbDatabits(splitedMsg[3]);
+        setBtc9100ModbusBaudrate(splitedMsg[4]);
+        setBtc9100ModbusSlaveId(splitedMsg[5]);
+        setEzd305fCmbPortname(splitedMsg[6]);
+        setEzd305fCmbParity(splitedMsg[7]);
+        setEzd305fCmbStopbits(splitedMsg[8]);
+      } else {
         switch (res.payload) {
           case 'OK, Fan On\n':
             setCheckFan(true);
@@ -84,7 +107,6 @@ export default function MCUDetail({ match }) {
 
   return (
     <DetailRoot>
-      
       <TempWrapper>
         <Temperature
           id="display"
@@ -126,10 +148,41 @@ export default function MCUDetail({ match }) {
           manual={manual}
         />
       </Controller>
-      <div>
-        <button type="button" onClick={handleSendMessage(configFileRead())}>ConfigFileRead</button>
-        {config}
-      </div>
+      <GridElement item xs={12} md={6}>
+        <TypographyElement sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+          ConfigFileRead
+        </TypographyElement>
+        <button type="button" onClick={handleSendMessage(configFileRead())}>check</button>
+        <ListElement>
+          <ListItemElement>
+            <ListItemTextElement primary={btc9100CmbPortname} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={btc9100ModbusParity} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={btc9100CmbStopbits} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={btc9100CmbDatabits} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={btc9100ModbusBaudrate} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={btc9100ModbusSlaveId} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={ezd305fCmbPortname} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={ezd305fCmbParity} />
+          </ListItemElement>
+          <ListItemElement>
+            <ListItemTextElement primary={ezd305fCmbStopbits} />
+          </ListItemElement>
+        </ListElement>
+      </GridElement>
     </DetailRoot>
   );
 }
