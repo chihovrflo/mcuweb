@@ -15,7 +15,7 @@ export default function MCUList() {
   return (
     <ListRoot>
       <ListContainer>
-        <h2>MCU List</h2>
+        <h2>Chamber List</h2>
         {mcuList.map(({ name, host, port }) => (
           <MCUItem key={name}>
             <MCUItem.Editor
