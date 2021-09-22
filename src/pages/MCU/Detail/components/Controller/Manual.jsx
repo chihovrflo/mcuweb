@@ -23,7 +23,7 @@ export default function Manual({
   manual,
 }) {
   const { ctrlComponent } = useContext(ControllContext);
-  return ctrlComponent === 'Manual' ? (
+  return ctrlComponent === 'Manual' && (
     <>
       <FunctionWrapper>
         <SwitchLabel
@@ -59,7 +59,7 @@ export default function Manual({
         {manual}
       </MsgBox>
     </>
-  ) : null;
+  );
 }
 
 Manual.propTypes = {

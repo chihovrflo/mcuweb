@@ -10,7 +10,7 @@ export default function MCUList() {
   const [mcuList, setMCUList] = useState([]);
   useEffect(async () => {
     const mcu = await getMCUList();
-    setMCUList(mcu.list);
+    setMCUList(mcu.data.list);
   }, []);
   return (
     <ListRoot>
