@@ -1,21 +1,21 @@
 import styled from 'styled-components';
 import {
   Switch,
-  Grid,
-  Typography,
   TextField,
   FormControlLabel,
 } from '@material-ui/core';
 
-export const AntSwitch = styled(Switch)``;
-export const GridElement = styled(Grid)``;
-export const TypographyElement = styled(Typography)``;
+export const ControllerRoot = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 export const DetailInput = styled(TextField)``;
 export const FunctionWrapper = styled.div`
   display: flex;
-  justify-content: center;
 `;
 export const SwitchLabel = styled(FormControlLabel)``;
+export const SwitchGroup = styled.div``;
 export const SwitchItem = styled(Switch)``;
 export const MsgBox = styled.div`
   height: 40px; 

@@ -11,7 +11,7 @@ export default function Auto({
 }) {
   const { ctrlComponent } = useContext(ControllContext);
   const handleTemp = (event) => setTemp(event.target.value);
-  return ctrlComponent === 'Auto' ? (
+  return ctrlComponent === 'Auto' && (
     <>
       <FunctionWrapper>
         <DetailInput label="Temp" value={temp} onChange={handleTemp} />
@@ -21,7 +21,7 @@ export default function Auto({
         {auto}
       </MsgBox>
     </>
-  ) : null;
+  );
 }
 
 Auto.propTypes = {
