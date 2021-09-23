@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import propTypes from 'prop-types';
 import pt from 'lib/propTypes';
 import ControllContext from './context';
 import Auto from './Auto';
@@ -11,13 +12,15 @@ import {
 
 function Controller({
   children,
+  handleChangeMode,
+  mode,
 }) {
-  const [ctrlComponent, setCtrlComponent] = useState('Auto');
-  const handleMode = (event) => {
-    setCtrlComponent(event.target.checked ? 'Manual' : 'Auto');
+  const handleMode = () => {
+    handleChangeMode('ChangeMode');
   };
+  console.log(mode);
   return (
-    <ControllContext.Provider value={{ ctrlComponent }}>
+    <ControllContext.Provider value={{ mode }}>
       <ControllerRoot>
         <SwitchGroup>
           Auto
@@ -32,6 +35,8 @@ function Controller({
 
 Controller.propTypes = {
   children: pt.children.isRequired,
+  handleChangeMode: propTypes.func.isRequired,
+  mode: propTypes.string.isRequired,
 };
 
 Controller.Auto = Auto;

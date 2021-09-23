@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useWebSocket from 'hooks/useWebSocket';
 import pt from 'lib/propTypes';
 import {
-  tempSetup, fanOn, fanOff, fanSetup, bulbOn, bulbOff, bulbSetup, configFileRead,
+  tempSetup, fanOn, fanOff, fanSetup, bulbOn, bulbOff, bulbSetup, configFileRead, changeMode,
 } from 'actions/mcu';
 import {
   DetailRoot,
@@ -30,6 +30,7 @@ export default function MCUDetail({ match }) {
   const [bulb, setBulb] = useState('');
   const [checkedFan, setCheckFan] = useState(false);
   const [checkedBulb, setCheckBulb] = useState(false);
+  const [mode, setMode] = useState('1');
   const wsRef = useWebSocket({
     onOpen: (ws) => {
       console.log('ws is opened!');
@@ -48,6 +49,7 @@ export default function MCUDetail({ match }) {
         setDisplay(splitedMsg[0].split(':')[1]);
         setFanSpeed(splitedMsg[1].split(':')[1]);
         setBulbLight(splitedMsg[2].split(':')[1]);
+        setMode(splitedMsg[3].split(':')[1]);
       } else if (res.type === 'setUpAuto') setAuto(res.payload);
       else if (res.type === 'setUpConfig') setConfig(res.payload);
       else {
@@ -75,6 +77,12 @@ export default function MCUDetail({ match }) {
   const handleInput = (setValue) => (event) => setValue(event.target.value);
 
   const handleSendMessage = (action) => () => {
+    if (wsRef.current) {
+      wsRef.current.send(JSON.stringify(action));
+    }
+  };
+
+  const handleChangeMode = (action) => () => {
     if (wsRef.current) {
       wsRef.current.send(JSON.stringify(action));
     }
@@ -109,7 +117,10 @@ export default function MCUDetail({ match }) {
         <span>bulbLight:</span>
         <span>{bulbLight}</span>
       </DetailItem>
-      <Controller>
+      <Controller
+        handleChangeMode={handleChangeMode(changeMode())}
+        mode={mode}
+      >
         <Controller.Auto
           temp={temp}
           setTemp={setTemp}

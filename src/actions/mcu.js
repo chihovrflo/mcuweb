@@ -79,3 +79,11 @@ export function configFileRead() {
     },
   };
 }
+export function changeMode() {
+  return {
+    type: 'SOCKET_CMD',
+    payload: {
+      type: 'ChangeMode',
+    },
+  };
+}

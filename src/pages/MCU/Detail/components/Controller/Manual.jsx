@@ -22,8 +22,8 @@ export default function Manual({
   handleBulbSetUp,
   manual,
 }) {
-  const { ctrlComponent } = useContext(ControllContext);
-  return ctrlComponent === 'Manual' && (
+  const { mode } = useContext(ControllContext);
+  return mode === '2' && (
     <>
       <FunctionWrapper>
         <SwitchLabel

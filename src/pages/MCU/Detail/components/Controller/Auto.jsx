@@ -9,9 +9,9 @@ export default function Auto({
   handleTempSetUp,
   auto,
 }) {
-  const { ctrlComponent } = useContext(ControllContext);
+  const { mode } = useContext(ControllContext);
   const handleTemp = (event) => setTemp(event.target.value);
-  return ctrlComponent === 'Auto' && (
+  return mode === '1' && (
     <>
       <FunctionWrapper>
         <DetailInput label="Temp" value={temp} onChange={handleTemp} />
