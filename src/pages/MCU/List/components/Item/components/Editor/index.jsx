@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-import propTypes from 'prop-types';
+import React, { useContext } from 'react';
 import ItemContext from '../../context';
 import {
   EditorRoot,
@@ -8,11 +7,16 @@ import {
   ItemValue,
 } from './styled';
 
-export default function Editor({ name, host, port }) {
-  const [editName, setEditName] = useState(name || '');
-  const [editHost, setEditHost] = useState(host || '');
-  const [editPort, setEditPort] = useState(port || '');
-  const { isEdit } = useContext(ItemContext);
+export default function Editor() {
+  const {
+    isEdit,
+    editName,
+    setEditName,
+    editHost,
+    setEditHost,
+    editPort,
+    setEditPort,
+  } = useContext(ItemContext);
   return isEdit && (
     <EditorRoot>
       <ItemRow>
@@ -30,9 +34,3 @@ export default function Editor({ name, host, port }) {
     </EditorRoot>
   );
 }
-
-Editor.propTypes = {
-  name: propTypes.string.isRequired,
-  host: propTypes.string.isRequired,
-  port: propTypes.string.isRequired,
-};
