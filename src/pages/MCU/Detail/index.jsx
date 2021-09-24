@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import useWebSocket from 'hooks/useWebSocket';
 import pt from 'lib/propTypes';
 import {
@@ -30,7 +31,8 @@ export default function MCUDetail({ match }) {
   const [bulb, setBulb] = useState('');
   const [checkedFan, setCheckFan] = useState(false);
   const [checkedBulb, setCheckBulb] = useState(false);
-  const [mode, setMode] = useState('1');
+  const [mode, setMode] = useState('1\n');
+  const history = useHistory();
   const wsRef = useWebSocket({
     onOpen: (ws) => {
       console.log('ws is opened!');
@@ -49,7 +51,7 @@ export default function MCUDetail({ match }) {
         setDisplay(splitedMsg[0].split(':')[1]);
         setFanSpeed(splitedMsg[1].split(':')[1]);
         setBulbLight(splitedMsg[2].split(':')[1]);
-        setMode(splitedMsg[3].split(':')[1]);
+        setMode(splitedMsg[4].split(':')[1]);
       } else if (res.type === 'setUpAuto') setAuto(res.payload);
       else if (res.type === 'setUpConfig') setConfig(res.payload);
       else {
@@ -97,6 +99,9 @@ export default function MCUDetail({ match }) {
 
   return (
     <DetailRoot>
+      <div style={{ padding: '15px', backgroundColor: 'black', marginBottom: '15px' }}>
+        <button type="button" onClick={() => history.goBack()}>Return</button>
+      </div>
       <TempWrapper>
         <Temperature
           id="display"
@@ -145,7 +150,7 @@ export default function MCUDetail({ match }) {
         <TypographyElement sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
           ConfigFileRead
         </TypographyElement>
-        <button type="button" onClick={handleSendMessage(configFileRead())}>check</button>
+        <button type="button" onClick={handleSendMessage(configFileRead())}>Check</button>
         <ListElement>
           {config.split(', ').map((setting) => (
             <ListItemElement key={setting}>

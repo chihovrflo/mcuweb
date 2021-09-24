@@ -17,9 +17,3 @@ export const FunctionWrapper = styled.div`
 export const SwitchLabel = styled(FormControlLabel)``;
 export const SwitchGroup = styled.div``;
 export const SwitchItem = styled(Switch)``;
-export const MsgBox = styled.div`
-  height: 40px; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;

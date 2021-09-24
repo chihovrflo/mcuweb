@@ -18,13 +18,12 @@ function Controller({
   const handleMode = () => {
     handleChangeMode('ChangeMode');
   };
-  console.log(mode);
   return (
     <ControllContext.Provider value={{ mode }}>
       <ControllerRoot>
         <SwitchGroup>
           Auto
-          <SwitchItem onChange={handleMode} name="checkedMode" />
+          <SwitchItem onChange={handleMode} name="checkedMode" checked={mode === '2\n'} />
           Manual
         </SwitchGroup>
         {children}

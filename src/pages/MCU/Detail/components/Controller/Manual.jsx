@@ -6,7 +6,6 @@ import {
   SwitchItem,
   SwitchLabel,
   DetailInput,
-  MsgBox,
 } from './styled';
 
 export default function Manual({
@@ -20,10 +19,9 @@ export default function Manual({
   handleBulbSwitch,
   handleFanSetUp,
   handleBulbSetUp,
-  manual,
 }) {
   const { mode } = useContext(ControllContext);
-  return mode === '2' && (
+  return mode === '2\n' && (
     <>
       <FunctionWrapper>
         <SwitchLabel
@@ -55,9 +53,6 @@ export default function Manual({
         <DetailInput label="Bulb" value={bulb} onChange={handleBulb} />
         <button type="button" onClick={handleBulbSetUp}>Send</button>
       </FunctionWrapper>
-      <MsgBox>
-        {manual}
-      </MsgBox>
     </>
   );
 }
@@ -73,5 +68,4 @@ Manual.propTypes = {
   handleBulbSwitch: propTypes.func.isRequired,
   handleFanSetUp: propTypes.func.isRequired,
   handleBulbSetUp: propTypes.func.isRequired,
-  manual: propTypes.string.isRequired,
 };
